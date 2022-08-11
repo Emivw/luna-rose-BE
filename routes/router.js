@@ -32,7 +32,7 @@ router.post('/api/register', express.json(), userMiddleware.validateRegister, (r
     lastname,
     address,
     gender,
-    user_role = 'user',
+    user_role
   }
 
   if (!email) {
@@ -161,22 +161,22 @@ router.get('/secret-route', userMiddleware.isLoggedIn, (req, res, next) => {
   res.send('This is the secret content. Only logged in users can see that!');
 });
 
-router.get('api/users/',  (req, res, next) => {
-db.query(`SELECT * FROM users`, 
-    (err, result) => {
-      // user does not exists
-      if (err) {
-        return res.status(400).send({
-          msg: err
-        });
-      }
-      if (result.length !=== 0) {
-        return res.status(200).send({
-          msg: 'users successfully loaded'
-        });
-      }
-    })
-});
+// router.get('api/users/',  (req, res, next) => {
+// db.query(`SELECT * FROM users`, 
+//     (err, result) => {
+//       // user does not exists
+//       if (err) {
+//         return res.status(400).send({
+//           msg: err
+//         });
+//       }
+//       if (result.length !=== 0) {
+//         return res.status(200).send({
+//           msg: 'users successfully loaded'
+//         });
+//       }
+//     })
+// });
 
 
 // get all products
