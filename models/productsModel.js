@@ -1,5 +1,5 @@
 // import connection
-import conn from "../config/db.js"
+const conn = require("../config/db.js");
 
 export const getProducts = (result) => {
     conn.query("SELECT * FROM products", (err, results) => {

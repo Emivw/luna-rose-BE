@@ -1,10 +1,10 @@
-import {
+const {
     getProductById,
     getProducts,
     insertProduct,
     updateProductById,
-    deleteProductById,
-} from "../models/productModel.js";
+    deleteProductById
+} = require("../models/productModel.js");
 // show all products
 export const showProducts = (req, res) => {
     getProducts((err, results) => {

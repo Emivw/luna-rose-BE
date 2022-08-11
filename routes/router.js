@@ -7,13 +7,13 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken')
 const userMiddleware = require('../middleware/users.js');
-import {
+const {
   showProducts,
   showProductById,
   createProduct,
   updateProduct,
   deleteProduct,
-} from "../middleware/product.js";
+} = require("../middleware/product.js");
 // import {
 //   showUsers,
 //   showUserById,
