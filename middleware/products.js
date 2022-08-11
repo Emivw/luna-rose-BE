@@ -4,7 +4,7 @@ const {
     insertProduct,
     updateProductById,
     deleteProductById
-} = require("../models/productModel.js");
+} = require("../models/productsModel.js");
 module.exports = {
     // show all products
     showProducts: (req, res) => {
