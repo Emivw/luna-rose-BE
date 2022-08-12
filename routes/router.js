@@ -15,6 +15,7 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../middleware/products.js");
+const saltRounds = 10;
 // import {
 //   showUsers,
 //   showUserById,
@@ -24,16 +25,15 @@ const {
 // } from "../middleware/users.js";
 router.post('/api/register', express.json(), userMiddleware.validateRegister, (req, res) => {
 
-  let { email, user_password, password_repeat, firstname, lastname, gender, user_role} = req.body
+  let { email, userPassword, password_repeat, fullName, userRole } = req.body;
   //creating user object
+  const joinDate = new Date();
   const user = {
     email,
-    user_password,
-    firstname,
-    lastname,
-    address,
-    gender,
-    user_role
+    userPassword,
+    fullName,
+    userRole,
+    joinDate
   }
 
   if (!email) {
@@ -45,7 +45,7 @@ router.post('/api/register', express.json(), userMiddleware.validateRegister, (r
   // password (repeat) does not match
   if (
     !password_repeat ||
-    password != password_repeat
+    userPassword != password_repeat
   ) {
     return res.status(400).send({
       msg: 'Both passwords must match'
@@ -69,10 +69,12 @@ router.post('/api/register', express.json(), userMiddleware.validateRegister, (r
       });
     }
     // username is available
-    bcrypt.hash(password, 8).then((hash) => {
-      //set the password to hash value
-      user.password = hash
 
+    // username is available
+    bcrypt.hash(bd.userPassword, saltRounds, function (err, hash) {
+      // Store hash in your password DB.
+      bd.userPassword = hash;
+      console.log(bd.userPassword, hash);
     }).then(() => {
       db.query("INSERT INTO users SET ?", user, (err, result) => {
         if (err) {
@@ -80,9 +82,6 @@ router.post('/api/register', express.json(), userMiddleware.validateRegister, (r
             msg: err
           })
         }
-
-
-
         db.query('SELECT * FROM users WHERE email=?', email, 
         (err, result) => {
           if (err) {
@@ -119,8 +118,8 @@ router.post('api/login', (req, res, next) => {
       }
       // check password
       bcrypt.compare(
-        req.body.user_password,
-        result[0]['user_password'],
+        req.body.userPassword,
+        result[0]['userPassword'],
         (bErr, bResult) => {
           // wrong password
           if (bErr) {
