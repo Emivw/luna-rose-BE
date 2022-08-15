@@ -213,13 +213,13 @@ router.get('api/products/:id', (req, res, next) => {
 });
 
 // create new product
-router.post('/products', createProduct);
+// router.post('/products', createProduct);
 
-// update Product
-router.put('/products/:id', updateProduct);
+// // update Product
+// router.put('/products/:id', updateProduct);
 
-// delete Product
-router.delete('/products/:id', deleteProduct);
+// // delete Product
+// router.delete('/products/:id', deleteProduct);
 
 
 
