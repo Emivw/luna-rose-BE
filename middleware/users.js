@@ -71,7 +71,7 @@ module.exports = {
     // password min 6 chars
     if (!req.body.password || req.body.password.length < 6) {
       return res.status(400).send({
-        msg: 'Please enter a password with min. 6 chars'
+        msg: 'Please enter a password with min. 6 char'
       });
     }
     // password (repeat) does not match
