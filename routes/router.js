@@ -69,12 +69,14 @@ router.post('/api/register', express.json(), userMiddleware.validateRegister, (r
       });
     }
     // username is available
-
+    let userPassword = 'pass1';
+    const saltRounds = 10;
+    const bcrypt = require('bcrypt');
     // username is available
-    bcrypt.hash(bd.userPassword, saltRounds, function (err, hash) {
+    bcrypt.hash(userPassword, saltRounds, function (err, hash) {
       // Store hash in your password DB.
-      bd.userPassword = hash;
-      console.log(bd.userPassword, hash);
+      userPassword = hash;
+      console.log(userPassword, hash);
     }).then(() => {
       db.query("INSERT INTO users SET ?", user, (err, result) => {
         if (err) {
@@ -130,13 +132,12 @@ router.post('api/login', (req, res, next) => {
           if (bResult) {
             const token = jwt.sign({
                 email: result[0].email,
-                firstname: result[0].firstname,
-                lastname: result[0].lastname,
-                gender: result[0].gender,
-                user_password: result[0].user_password,
-                address: result[0].address,
-                user_role: result[0].user_role,
-                userId: result[0].id
+                fullName: result[0].fullName,
+                joinDate: result[0].joinDate,
+                userPassword: result[0].userPassword,
+                userRole: result[0].userRole,
+                userId: result[0].userId,
+                cart: result[0].cart
               },
               'SECRETKEY', {
                 expiresIn: '7d'
@@ -180,10 +181,42 @@ router.get('/secret-route', userMiddleware.isLoggedIn, (req, res, next) => {
 
 
 // get all products
-router.get('/products', showProducts);
+router.post('api/products', (req, res, next) => {
+  db.query(
+    `SELECT * FROM products`,
+    (err, result) => {
+      // user does not exists
+      if (err) {
+        return res.status(400).send({
+          msg: err
+        });
+      }
+      if (result.length !== 0) {
+        return res.status(201).send({
+          msg: 'Products loaded successfully'
+        });
+      }
+    })
+})
 
 // get single product
-router.get('/products/:id', showProductById);
+router.get('api/products/:id', req.params.id, (req, res, next) => {
+  db.query(
+    `SELECT * FROM products WHERE prodId = '${db.escape(req.params.id)}'`,
+    (err, result) => {
+      // user does not exists
+      if (err) {
+        return res.status(400).send({
+          msg: err
+        });
+      }
+      if (result.length !== 0) {
+        return res.status(201).send({
+          msg: 'Product loaded successfully'
+        });
+      }
+    })
+})
 
 // create new product
 router.post('/products', createProduct);
