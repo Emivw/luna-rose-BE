@@ -197,12 +197,13 @@ router.post('api/products', (req, res, next) => {
         });
       }
     })
-})
+});
 
 // get single product
-router.get('api/products/:id', req.params.id, (req, res, next) => {
+router.get('api/products/:id', (req, res, next) => {
   db.query(
     `SELECT * FROM products WHERE prodId = '${db.escape(req.params.id)}'`,
+    req.params.id,
     (err, result) => {
       // user does not exists
       if (err) {
@@ -216,7 +217,7 @@ router.get('api/products/:id', req.params.id, (req, res, next) => {
         });
       }
     })
-})
+});
 
 // create new product
 router.post('/products', createProduct);
