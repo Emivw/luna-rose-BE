@@ -10,29 +10,43 @@ const userMiddleware = require('../middleware/users.js');
 const fs = require('fs');
 const saltRounds = 10;
 // import {
-  //   showUsers,
-  //   showUserById,
-  //   createUser,
-  //   updateUser,
-  //   deleteUser,
-  // } from "../middleware/users.js";
-  router.get('api/products', (req, res, next) => {
-    db.query(
-      `SELECT * FROM products`,
-      (err, result) => {
-        // user does not exists
-        if (err) {
-          return res.status(400).send({
-            msg: err
-          });
-        }
-        if (result.length !== 0) {
-          return res.status(201).send({
-            msg: 'Products loaded successfully on drive'
-          });
-        }
-      })
-  });
+//   showUsers,
+//   showUserById,
+//   createUser,
+//   updateUser,
+//   deleteUser,
+// } from "../middleware/users.js";
+router.get('/api/products', (req, res, next) => {
+  db.query(
+    `SELECT * FROM products`,
+    (err, result) => {
+      // user does not exists
+      if (err) {
+        return res.status(400).send({
+          msg: err
+        });
+      }
+      if (result.length !== 0) {
+        return res.send(result);
+      }
+    })
+});
+router.get('/api/products/:id', (req, res, next) => {
+  db.query(
+    `SELECT * FROM products WHERE prodId = ?,
+    req.params.id`,
+    (err, result) => {
+      // user does not exists
+      if (err) {
+        return res.status(400).send({
+          msg: err
+        });
+      }
+      if (result.length !== 0) {
+        return res.send(result);
+      }
+    })
+});
 router.post('/api/register', express.json(), userMiddleware.validateRegister, (req, res) => {
 
   let { email, userPassword, password_repeat, fullName, userRole } = req.body;
@@ -94,26 +108,26 @@ router.post('/api/register', express.json(), userMiddleware.validateRegister, (r
             msg: err
           })
         }
-        db.query('SELECT * FROM users WHERE email=?', email, 
-        (err, result) => {
-          if (err) {
-            return res.status(400).send({
-              msg: err
-            })
-          }
+        db.query('SELECT * FROM users WHERE email=?', email,
+          (err, result) => {
+            if (err) {
+              return res.status(400).send({
+                msg: err
+              })
+            }
 
-          return res.status(201)
-            .send({
-              userdata: user,
-              msg: "successfully registered"
-            })
-        })
+            return res.status(201)
+              .send({
+                userdata: user,
+                msg: "successfully registered"
+              })
+          })
 
       })
     })
   });
 })
-router.post('api/login', (req, res, next) => {
+router.post('/api/login', (req, res, next) => {
   db.query(
     `SELECT * FROM users WHERE email = ${db.escape(req.body.email)};`,
     (err, result) => {
@@ -141,17 +155,17 @@ router.post('api/login', (req, res, next) => {
           }
           if (bResult) {
             const token = jwt.sign({
-                email: result[0].email,
-                fullName: result[0].fullName,
-                joinDate: result[0].joinDate,
-                userPassword: result[0].userPassword,
-                userRole: result[0].userRole,
-                userId: result[0].userId,
-                cart: result[0].cart
-              },
+              email: result[0].email,
+              fullName: result[0].fullName,
+              joinDate: result[0].joinDate,
+              userPassword: result[0].userPassword,
+              userRole: result[0].userRole,
+              userId: result[0].userId,
+              cart: result[0].cart
+            },
               'SECRETKEY', {
-                expiresIn: '7d'
-              }
+              expiresIn: '7d'
+            }
             );
             return res.status(200).send({
               msg: 'Logged in!',
@@ -193,24 +207,7 @@ router.get('/secret-route', userMiddleware.isLoggedIn, (req, res, next) => {
 // get all products
 
 // get single product
-router.get('api/products/:id', (req, res, next) => {
-  db.query(
-    `SELECT * FROM products WHERE prodId = ?,
-    req.params.id`,
-    (err, result) => {
-      // user does not exists
-      if (err) {
-        return res.status(400).send({
-          msg: err
-        });
-      }
-      if (result.length !== 0) {
-        return res.status(201).send({
-          msg: 'Product loaded successfully'
-        });
-      }
-    })
-});
+
 
 // create new product
 // router.post('/products', createProduct);
