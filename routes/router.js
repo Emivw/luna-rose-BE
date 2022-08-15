@@ -181,7 +181,7 @@ router.get('/secret-route', userMiddleware.isLoggedIn, (req, res, next) => {
 
 
 // get all products
-router.post('api/products', (req, res, next) => {
+router.get('api/products', (req, res, next) => {
   db.query(
     `SELECT * FROM products`,
     (err, result) => {
