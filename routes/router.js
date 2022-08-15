@@ -23,7 +23,7 @@ const saltRounds = 10;
   //   updateUser,
   //   deleteUser,
   // } from "../middleware/users.js";
-  router.get('api/products', (req, res, next) => {
+  router.get('api/products', express.json(), (req, res, next) => {
     db.query(
       `SELECT * FROM products`,
       (err, result) => {
