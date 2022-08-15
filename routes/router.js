@@ -8,13 +8,6 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken')
 const userMiddleware = require('../middleware/users.js');
 const fs = require('fs');
-const {
-  showProducts,
-  showProductById,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-} = require("../middleware/products.js");
 const saltRounds = 10;
 // import {
   //   showUsers,
