@@ -193,7 +193,7 @@ router.get('api/products', (req, res, next) => {
       }
       if (result.length !== 0) {
         return res.status(201).send({
-          msg: 'Products loaded successfully'
+          msg: 'Products loaded successfully on drive'
         });
       }
     })
