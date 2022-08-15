@@ -5,7 +5,7 @@ let connection;
 // Problem solved
 (function handleConnection() {
     connection = createConnection({
-        host: process.env.host,
+        host: process.env.dbHost,
         user: process.env.dbUser,
         password: process.env.dbPassword,
         port: process.env.dbPort,
