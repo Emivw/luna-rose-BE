@@ -49,8 +49,8 @@ router.get('/api/products', (req, res, next) => {
 // })
 router.get('/api/products/:id', (req, res, next) => {
   db.query(
-    `SELECT * FROM products WHERE id = ?,
-    req.params.id`,
+    `SELECT * FROM products WHERE id = ?`,
+    req.params.id,
     (err, results) => {
       // user does not exists
       if (err) {
