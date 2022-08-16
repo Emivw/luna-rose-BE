@@ -34,19 +34,6 @@ router.get('/api/products', (req, res, next) => {
       }
     })
 });
-// app.get('/products', bodyParser.json(), (req, res) => {
-//   let sql = `SELECT * FROM products;`
-//   db.query(sql, (err, results) => {
-//     if (err) {
-//       console.log(err)
-//     } else {
-//       res.json({
-//         status: 200,
-//         results: results
-//       })
-//     }
-//   })
-// })
 router.get('/api/products/:id', (req, res, next) => {
   db.query(
     `SELECT * FROM products WHERE id = ?`,
@@ -65,7 +52,7 @@ router.get('/api/products/:id', (req, res, next) => {
         })
       }
     })
-    })
+});
 router.get('/api/users', (req, res, next) => {
   db.query(
     `SELECT * FROM users`,
@@ -83,23 +70,27 @@ router.get('/api/users', (req, res, next) => {
         })
       }
     })
-})
+});
 router.get('/api/users/:id', (req, res, next) => {
   db.query(
-    `SELECT * FROM users WHERE userId = ?,
-    req.params.userId`,
-    (err, result) => {
+    `SELECT * FROM users WHERE id = ?`,
+    req.params.id,
+    (err, results) => {
       // user does not exists
       if (err) {
         return res.status(400).send({
           msg: err
         });
       }
-      if (result.length !== 0) {
-        return res.send(result);
+      else {
+        res.json({
+          status: 200,
+          results: results
+        })
       }
     })
-});
+})
+
 router.post('/api/register', express.json(), userMiddleware.validateRegister, (req, res) => {
 
   let { email, userPassword, password_repeat, fullName, userRole } = req.body;
@@ -107,10 +98,11 @@ router.post('/api/register', express.json(), userMiddleware.validateRegister, (r
   const joinDate = new Date();
   const user = {
     email,
-    userPassword,
     fullName,
+    userPassword,
     userRole,
-    joinDate
+    joinDate,
+    cart,
   }
 
   if (!email) {
@@ -146,9 +138,9 @@ router.post('/api/register', express.json(), userMiddleware.validateRegister, (r
       });
     }
     // username is available
-    let userPassword = 'pass1';
-    const saltRounds = 10;
-    const bcrypt = require('bcrypt');
+    // let userPassword = 'pass1';
+    // const saltRounds = 10;
+    // const bcrypt = require('bcrypt');
     // username is available
     bcrypt.hash(userPassword, saltRounds, function (err, hash) {
       // Store hash in your password DB.
@@ -182,7 +174,7 @@ router.post('/api/register', express.json(), userMiddleware.validateRegister, (r
 })
 router.post('/api/login', (req, res, next) => {
   db.query(
-    `SELECT * FROM users WHERE email = ${db.escape(req.body.email)};`,
+    `SELECT * FROM users WHERE email = ?`, req.body.email,
     (err, result) => {
       // user does not exists
       if (err) {
@@ -208,12 +200,12 @@ router.post('/api/login', (req, res, next) => {
           }
           if (bResult) {
             const token = jwt.sign({
-              email: result[0].email,
+              userId: result[0].userId,
               fullName: result[0].fullName,
-              joinDate: result[0].joinDate,
+              email: result[0].email,
               userPassword: result[0].userPassword,
               userRole: result[0].userRole,
-              userId: result[0].userId,
+              joinDate: result[0].joinDate,
               cart: result[0].cart
             },
               'SECRETKEY', {
