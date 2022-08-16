@@ -19,18 +19,34 @@ const saltRounds = 10;
 router.get('/api/products', (req, res, next) => {
   db.query(
     `SELECT * FROM products`,
-    (err, result) => {
+    (err, results) => {
       // user does not exists
       if (err) {
         return res.status(400).send({
           msg: err
         });
       }
-      if (result.length !== 0) {
-        return res.send(result);
+      else {
+        res.json({
+          status: 200,
+          results: results
+        })
       }
     })
 });
+// app.get('/products', bodyParser.json(), (req, res) => {
+//   let sql = `SELECT * FROM products;`
+//   db.query(sql, (err, results) => {
+//     if (err) {
+//       console.log(err)
+//     } else {
+//       res.json({
+//         status: 200,
+//         results: results
+//       })
+//     }
+//   })
+// })
 router.get('/api/products/:id', (req, res, next) => {
   db.query(
     `SELECT * FROM products WHERE id = ?,
