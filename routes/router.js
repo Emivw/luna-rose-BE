@@ -51,33 +51,39 @@ router.get('/api/products/:id', (req, res, next) => {
   db.query(
     `SELECT * FROM products WHERE id = ?,
     req.params.id`,
-    (err, result) => {
+    (err, results) => {
       // user does not exists
       if (err) {
         return res.status(400).send({
           msg: err
         });
       }
-      if (result.length !== 0) {
-        return res.send(result);
+      else {
+        res.json({
+          status: 200,
+          results: results
+        })
       }
     })
-});
+    })
 router.get('/api/users', (req, res, next) => {
   db.query(
     `SELECT * FROM users`,
-    (err, result) => {
+    (err, results) => {
       // user does not exists
       if (err) {
         return res.status(400).send({
           msg: err
         });
       }
-      if (result.length !== 0) {
-        return res.send(result);
+      else {
+        res.json({
+          status: 200,
+          results: results
+        })
       }
     })
-});
+})
 router.get('/api/users/:id', (req, res, next) => {
   db.query(
     `SELECT * FROM users WHERE userId = ?,
